@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4  # Mise à jour vers la dernière version stable de checkout
+        uses: actions/checkout@v4
 
       - name: Create docs directory if missing
         run: mkdir -p docs
@@ -20,7 +20,7 @@ jobs:
         run: echo "const HUGGINGFACE_TOKEN = '${{ secrets.HUGGINGFACE_TOKEN }}';" > docs/token.js
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4  # Mise à jour vers la dernière version stable de gh-pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GH_TOKEN }}  # Utilise le token PAT ici
           publish_dir: ./docs
