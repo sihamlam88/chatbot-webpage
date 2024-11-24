@@ -1,60 +1,65 @@
-// Ton token API Hugging Face
-const apiToken = "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";
+const chatInput = document.getElementById("chat-input");
+const sendButton = document.getElementById("send-button");
+const chatOutput = document.getElementById("chat-output");
 
-// Fonction pour obtenir une réponse du chatbot via l'API Hugging Face
-async function getBotResponse(input) {
+// L'URL de l'API Hugging Face
+const apiURL = "https://api-inference.huggingface.co/models/openai-community/gpt2";
+
+// Fonction pour envoyer une requête à Hugging Face
+async function sendMessage(message) {
+    // Récupération du token depuis une variable d'environnement (via GitHub Secrets)
+    const apiToken = process.env.HUGGINGFACE_TOKEN;
+
+    const headers = {
+        "Authorization": `Bearer ${apiToken}`,
+        "Content-Type": "application/json",
+    };
+
+    const body = JSON.stringify({
+        inputs: message,
+    });
+
     try {
-        const response = await fetch("https://api-inference.huggingface.co/models/openai-community/gpt2", {
+        const response = await fetch(apiURL, {
             method: "POST",
-            headers: {
-                "Authorization": `Bearer ${apiToken}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                inputs: input, // Le message utilisateur envoyé au chatbot
-            }),
+            headers: headers,
+            body: body,
         });
 
         if (!response.ok) {
-            throw new Error(`Erreur API : ${response.status}`);
+            throw new Error(`Erreur : ${response.status}`);
         }
 
         const data = await response.json();
-        return data[0]?.generated_text || "Désolé, je ne peux pas répondre pour le moment.";
+        if (data && data.generated_text) {
+            return data.generated_text;
+        } else {
+            return "Je n'ai pas compris. Pouvez-vous reformuler ?";
+        }
     } catch (error) {
-        console.error("Erreur lors de la communication avec le chatbot :", error);
+        console.error("Erreur lors de la requête :", error);
         return "Une erreur est survenue. Réessayez plus tard.";
     }
 }
 
-// Fonction qui gère l'envoi du message et l'affichage des réponses
-async function processInput() {
-    const userInput = document.getElementById("userInput").value;
-
-    if (userInput.trim() === "") {
-        alert("Veuillez entrer un message !");
+// Gérer l'envoi de message
+sendButton.addEventListener("click", async () => {
+    const userMessage = chatInput.value.trim();
+    if (!userMessage) {
         return;
     }
 
-    // Ajoute le message utilisateur au chat
-    const chatbox = document.getElementById("chatbox");
-    chatbox.innerHTML += `<div><strong>Vous :</strong> ${userInput}</div>`;
+    // Affiche le message de l'utilisateur
+    chatOutput.innerHTML += `<p><strong>Vous :</strong> ${userMessage}</p>`;
 
-    // Vide le champ de texte
-    document.getElementById("userInput").value = "";
+    // Envoie le message au chatbot et récupère la réponse
+    const botReply = await sendMessage(userMessage);
 
-    // Obtient la réponse du chatbot
-    const botResponse = await getBotResponse(userInput);
-    chatbox.innerHTML += `<div><strong>Chatbot :</strong> ${botResponse}</div>`;
+    // Affiche la réponse du bot
+    chatOutput.innerHTML += `<p><strong>Chatbot :</strong> ${botReply}</p>`;
 
-    // Garde la vue scrolée vers le bas
-    chatbox.scrollTop = chatbox.scrollHeight;
-}
-
-// Ajoute un événement pour détecter l'appui sur "Entrée"
-document.getElementById("userInput").addEventListener("keypress", function (event) {
-    if (event.key === "Enter") {
-        processInput();
-    }
+    // Efface l'entrée utilisateur
+    chatInput.value = "";
 });
+
 
