@@ -3,7 +3,7 @@ name: Deploy Chatbot Page
 on:
   push:
     branches:
-      - main  # Exécute ce workflow à chaque push sur la branche principale.
+      - main
 
 jobs:
   deploy:
@@ -12,6 +12,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Create docs directory if missing
+        run: mkdir -p docs
 
       - name: Inject Hugging Face Token
         run: echo "const HUGGINGFACE_TOKEN = '${{ secrets.HUGGINGFACE_TOKEN }}';" > docs/token.js
