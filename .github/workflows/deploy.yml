@@ -3,7 +3,7 @@ name: Deploy Chatbot Page
 on:
   push:
     branches:
-      - main
+      - main  # Exécute ce workflow à chaque push sur la branche principale.
 
 jobs:
   deploy:
