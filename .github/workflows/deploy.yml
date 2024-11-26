@@ -32,13 +32,7 @@ jobs:
       - name: Create docs directory if missing
         run: mkdir -p docs
 
-      # 5. Copie les fichiers nécessaires dans le dossier docs
-      - name: Copy files to docs directory
-        run: |
-          cp index.html docs/
-          cp style.css docs/
-          cp app.js docs/
-          cp .nojekyll docs/
+     
 
       # 6. Utilise un token d'authentification pour pousser sur GitHub Pages
       - name: Inject Hugging Face Token
