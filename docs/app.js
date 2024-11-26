@@ -1,4 +1,3 @@
-
 // Charger le token Hugging Face depuis token.js
 import { HUGGINGFACE_TOKEN } from './token.js';
 
