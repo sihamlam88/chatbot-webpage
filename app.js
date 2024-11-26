@@ -13,7 +13,7 @@ function displayMessage(sender, message) {
   messageElement.classList.add('message', sender);
   messageElement.innerText = message;
   chatMessages.appendChild(messageElement);
-  chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll automatiquement
+  chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll automatiquement vers le bas
 }
 
 // Fonction pour interagir avec l'API Hugging Face
@@ -64,10 +64,13 @@ chatForm.addEventListener('submit', async (event) => {
 
     displayMessage('bot', 'Je réfléchis...'); // Message temporaire
 
-    const botResponse = await getChatbotResponse(userInput); // Obtenir la réponse du chatbot
+    // Obtenir la réponse du chatbot
+    const botResponse = await getChatbotResponse(userInput);
 
-    // Remplace le message temporaire par la réponse réelle
-    chatMessages.lastElementChild.innerText = botResponse;
+    // Remplacer le message temporaire par la réponse réelle
+    const botMessages = document.querySelectorAll('.message.bot');
+    const lastBotMessage = botMessages[botMessages.length - 1];
+    lastBotMessage.innerText = botResponse;
   }
 });
 
