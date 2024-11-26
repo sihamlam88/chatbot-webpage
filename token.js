@@ -1,1 +1,1 @@
-const HUGGINGFACE_TOKEN = '';
+const HUGGINGFACE_TOKEN = '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';
