@@ -3,42 +3,44 @@ name: Deploy Chatbot Page
 on:
   push:
     branches:
-      - main  # Exécute ce workflow à chaque push sur la branche principale.
+      - main  # Exécute ce workflow à chaque push sur la branche principale
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # Vérifier le code source
+      # Étape 1 : Récupérer le code source depuis le dépôt
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Installer Node.js pour les dépendances et la construction
+      # Étape 2 : Installer Node.js et les dépendances
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16' # Assurez-vous d'utiliser une version compatible avec vos outils
+          node-version: 16  # Version de Node.js à utiliser (v16 LTS recommandée)
 
-      # Installer les dépendances (si nécessaire)
-      - name: Install dependencies
+      - name: Installer les dépendances
         run: npm install
 
-      # Créer le répertoire `docs` s'il n'existe pas
+      # Étape 3 : Créer le dossier `docs` (si nécessaire) et injecter le token Hugging Face
       - name: Create docs directory if missing
         run: mkdir -p docs
 
-      # Injecter le token Hugging Face dans un fichier sécurisé
       - name: Inject Hugging Face Token
         run: echo "const HUGGINGFACE_TOKEN = '${{ secrets.HUGGINGFACE_TOKEN }}';" > docs/token.js
 
-      # Construire le projet si nécessaire (remplacez cette étape si vous avez une commande de build spécifique)
-      - name: Build project
-        run: npm run build
+      # Étape 4 : Copier les fichiers nécessaires dans `docs` pour GitHub Pages
+      - name: Préparer les fichiers pour GitHub Pages
+        run: |
+          cp index.html docs/
+          cp style.css docs/
+          cp app.js docs/
 
-      # Déployer sur GitHub Pages
+      # Étape 5 : Déployer sur GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GH_TOKEN }}
-          publish_dir: ./docs
+          publish_dir: docs
+
