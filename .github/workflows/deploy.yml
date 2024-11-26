@@ -3,44 +3,52 @@ name: Deploy Chatbot Page
 on:
   push:
     branches:
-      - main  # Exécute ce workflow à chaque push sur la branche principale
+      - main  # Exécute ce workflow à chaque push sur la branche principale.
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
-      # Étape 1 : Récupérer le code source depuis le dépôt
+      # 1. Vérifie et clone le code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Étape 2 : Installer Node.js et les dépendances
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16  # Version de Node.js à utiliser (v16 LTS recommandée)
+      # 2. Installe les dépendances
+      - name: Install Dependencies
+        run: |
+          npm install
 
-      - name: Installer les dépendances
-        run: npm install
+      # 3. Vérifie si le fichier index.html est bien dans le dossier `docs`
+      - name: Check if index.html exists
+        run: |
+          if [ -f "docs/index.html" ]; then
+            echo "index.html found in docs directory."
+          else
+            echo "index.html is missing."
+            exit 1
+          fi
 
-      # Étape 3 : Créer le dossier `docs` (si nécessaire) et injecter le token Hugging Face
+      # 4. Prépare les fichiers pour la publication sur GitHub Pages
       - name: Create docs directory if missing
         run: mkdir -p docs
 
-      - name: Inject Hugging Face Token
-        run: echo "const HUGGINGFACE_TOKEN = '${{ secrets.HUGGINGFACE_TOKEN }}';" > docs/token.js
-
-      # Étape 4 : Copier les fichiers nécessaires dans `docs` pour GitHub Pages
-      - name: Préparer les fichiers pour GitHub Pages
+      # 5. Copie les fichiers nécessaires dans le dossier docs
+      - name: Copy files to docs directory
         run: |
           cp index.html docs/
           cp style.css docs/
           cp app.js docs/
+          cp .nojekyll docs/
 
-      # Étape 5 : Déployer sur GitHub Pages
+      # 6. Utilise un token d'authentification pour pousser sur GitHub Pages
+      - name: Inject Hugging Face Token
+        run: echo "const HUGGINGFACE_TOKEN = '${{ secrets.HUGGINGFACE_TOKEN }}';" > docs/token.js
+
+      # 7. Déploye les fichiers sur GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
-          github_token: ${{ secrets.GH_TOKEN }}
-          publish_dir: docs
+          publish_dir: ./docs
+          personal_token: ${{ secrets.GH_TOKEN }}
+
 
