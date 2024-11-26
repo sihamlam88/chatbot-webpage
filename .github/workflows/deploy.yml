@@ -3,28 +3,36 @@ name: Deploy Chatbot Page
 on:
   push:
     branches:
-      - main  # Exécute ce workflow à chaque push sur la branche principale
+      - main  # Exécute ce workflow à chaque push sur la branche principale.
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # Étape 1 : Vérifier le code
+      # Étape 1 : Cloner le code
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      # Étape 2 : Créer le répertoire 'docs' s'il manque
+      # Étape 2 : Créer le répertoire docs s'il n'existe pas
       - name: Create docs directory if missing
         run: mkdir -p docs
 
-      # Étape 3 : Injecter le Hugging Face Token dans un fichier JavaScript
+      # Étape 3 : Injecter le token Hugging Face dans docs/token.js
       - name: Inject Hugging Face Token
         run: echo "const HUGGINGFACE_TOKEN = '${{ secrets.HUGGINGFACE_TOKEN }}';" > docs/token.js
 
-      # Étape 4 : Déployer vers GitHub Pages
+      # Étape 4 : Copier les fichiers nécessaires dans le répertoire docs
+      - name: Copy site files to docs
+        run: |
+          cp index.html docs/
+          cp app.js docs/
+          cp style.css docs/
+
+      # Étape 5 : Publier le site sur GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
-          github_token: ${{ secrets.GH_TOKEN }}  # Utilisation du secret GH_TOKEN pour l'authentification
-          publish_dir: ./docs  # Le répertoire à publier sur GitHub Pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
+
