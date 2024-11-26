@@ -1,14 +1,10 @@
 {
   "name": "chatbot-webpage",
   "version": "1.0.0",
-  "description": "Page web avec un chatbot utilisant Hugging Face.",
-  "main": "app.js",
+  "dependencies": {
+    "node-fetch": "^2.6.7"
+  },
   "scripts": {
     "start": "node app.js"
-  },
-  "author": "Siham",
-  "license": "MIT",
-  "dependencies": {
-    "node-fetch": "^2.6.7"  // Ajoute cette dépendance si tu utilises fetch()
   }
 }
