@@ -1,24 +1,22 @@
-// Charger le token Hugging Face depuis token.js
-import { HUGGINGFACE_TOKEN } from './token.js';
 
-// Sélecteurs DOM
+import { HUGGINGFACE_TOKEN } from './token.js'; // Assure-toi que le fichier token.js existe et contient ton token
+
 const chatForm = document.getElementById('chat-form');
-const chatInput = document.getElementById('chat-input');
-const chatMessages = document.getElementById('chat-messages');
+const chatInput = document.getElementById('userInput');
+const chatMessages = document.getElementById('chatbox');
 
 // Fonction pour afficher un message dans l'interface
 function displayMessage(sender, message) {
   const messageElement = document.createElement('div');
-  messageElement.classList.add('message', sender);
-  messageElement.innerText = message;
+  messageElement.classList.add('chat-message', sender);
+  messageElement.innerHTML = `<strong>${sender === 'user' ? 'You' : 'Chatbot'}:</strong> ${message}`;
   chatMessages.appendChild(messageElement);
-  chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll automatiquement vers le bas
+  chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
 // Fonction pour interagir avec l'API Hugging Face
 async function getChatbotResponse(userInput) {
   const apiUrl = 'https://api-inference.huggingface.co/models/openai-community/gpt2';
-
   try {
     const response = await fetch(apiUrl, {
       method: 'POST',
@@ -33,43 +31,31 @@ async function getChatbotResponse(userInput) {
     });
 
     if (!response.ok) {
-      throw new Error('Erreur avec la réponse de l\'API.');
+      throw new Error('Error with the API response.');
     }
 
     const data = await response.json();
-
-    // Retourner la réponse générée par le modèle
     if (data && data.generated_text) {
       return data.generated_text;
-    } else if (data && data[0]?.generated_text) {
-      return data[0].generated_text;
     } else {
-      throw new Error('Pas de réponse générée.');
+      throw new Error('No generated response.');
     }
   } catch (error) {
     console.error(error);
-    return "Je suis désolé, une erreur est survenue. Réessayez plus tard.";
+    return "Sorry, something went wrong. Please try again later.";
   }
 }
 
-// Gestionnaire d'événements pour le formulaire
+// Gestionnaire d'événements pour le formulaire de chat
 chatForm.addEventListener('submit', async (event) => {
   event.preventDefault(); // Empêche le rechargement de la page
   const userInput = chatInput.value.trim();
-
   if (userInput) {
     displayMessage('user', userInput); // Affiche le message de l'utilisateur
     chatInput.value = ''; // Vide le champ d'entrée
-
-    displayMessage('bot', 'Je réfléchis...'); // Message temporaire
-
-    // Obtenir la réponse du chatbot
-    const botResponse = await getChatbotResponse(userInput);
-
-    // Remplacer le message temporaire par la réponse réelle
-    const botMessages = document.querySelectorAll('.message.bot');
-    const lastBotMessage = botMessages[botMessages.length - 1];
-    lastBotMessage.innerText = botResponse;
+    displayMessage('bot', 'Thinking...'); // Message temporaire
+    const botResponse = await getChatbotResponse(userInput); // Obtenir la réponse du chatbot
+    chatMessages.lastElementChild.innerHTML = `<strong>Chatbot:</strong> ${botResponse}`; // Affiche la réponse réelle du bot
   }
 });
 
