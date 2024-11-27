@@ -14,7 +14,7 @@ function displayMessage(sender, message) {
 
 // Fonction pour interagir avec l'API Hugging Face
 async function getChatbotResponse(userInput) {
-  const apiUrl = 'https://api-inference.huggingface.co/models/openai-community/gpt2';
+  const apiUrl = 'https://api-inference.huggingface.co/models/gpt2-large';
   const token = await fetch('./token.js')
     .then((res) => res.text())
     .then((text) => {
