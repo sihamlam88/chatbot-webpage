@@ -1,1 +1,1 @@
-const HUGGINGFACE_TOKEN = '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';
+export const HUGGINGFACE_TOKEN = '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';
