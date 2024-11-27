@@ -15,12 +15,12 @@ function displayMessage(sender, message) {
 
 // Fonction pour interagir avec l'API Hugging Face
 async function getChatbotResponse(userInput) {
-  const apiUrl = 'https://api-inference.huggingface.co/models/openai-community/gpt2';
+  const apiUrl = 'https://api-inference.huggingface.co/models/openai-community/gpt2-medium'; // Updated to GPT-2 Medium
   try {
     const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${HUGGINGFACE_TOKEN}`,
+        Authorization: `Bearer ${HUGGINGFACE_TOKEN}`,  // Token is kept in secrets (environment variable or secure file)
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
