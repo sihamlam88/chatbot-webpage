@@ -1,4 +1,5 @@
-import { HUGGINGFACE_TOKEN } from './token.js';
+// Assuming the token is securely stored in the environment variables
+import { HUGGINGFACE_TOKEN } from './token.js';  // Token is already in token.js (from secrets or environment)
 
 const chatForm = document.getElementById('chat-form');
 const chatInput = document.getElementById('userInput');
@@ -15,12 +16,13 @@ function displayMessage(sender, message) {
 
 // Fonction pour interagir avec l'API Hugging Face
 async function getChatbotResponse(userInput) {
-  const apiUrl = 'https://api-inference.huggingface.co/models/openai-community/gpt2-medium'; // Updated to GPT-2 Medium
+  const apiUrl = 'https://api-inference.huggingface.co/models/gpt2-medium';  // Corrected to GPT-2 Medium
+  
   try {
     const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${HUGGINGFACE_TOKEN}`,  // Token is kept in secrets (environment variable or secure file)
+        Authorization: `Bearer ${HUGGINGFACE_TOKEN}`,  // The token retrieved from the environment/secrets
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
