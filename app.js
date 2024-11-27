@@ -1,4 +1,3 @@
-
 import { HUGGINGFACE_TOKEN } from './token.js';
 
 const chatForm = document.getElementById('chat-form');
@@ -50,12 +49,16 @@ async function getChatbotResponse(userInput) {
 chatForm.addEventListener('submit', async (event) => {
   event.preventDefault();
   const userInput = chatInput.value.trim();
-  if (userInput) {
-    displayMessage('user', userInput);
-    chatInput.value = '';
-    displayMessage('bot', 'Thinking...');
-    const botResponse = await getChatbotResponse(userInput);
-    chatMessages.lastElementChild.innerHTML = `<strong>Chatbot:</strong> ${botResponse}`;
-  }
-});
 
+  // Check for empty input and display a warning if needed
+  if (!userInput) {
+    displayMessage('bot', 'Please enter something.');
+    return; // Stop further execution
+  }
+
+  displayMessage('user', userInput);
+  chatInput.value = ''; // Clear input field
+  displayMessage('bot', 'Thinking...'); // Show thinking message
+  const botResponse = await getChatbotResponse(userInput);
+  chatMessages.lastElementChild.innerHTML = `<strong>Chatbot:</strong> ${botResponse}`; // Replace thinking message with response
+});
