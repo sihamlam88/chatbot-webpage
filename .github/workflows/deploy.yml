@@ -13,10 +13,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2. Installe les dépendances
+      # 2. Installe les dépendances (si nécessaire)
       - name: Install Dependencies
         run: |
-          npm install
+          if [ -f "package.json" ]; then
+            npm install
+          else
+            echo "No package.json found. Skipping npm install."
+          fi
 
       # 3. Vérifie si le fichier index.html est bien dans le dossier `docs`
       - name: Check if index.html exists
@@ -28,15 +32,18 @@ jobs:
             exit 1
           fi
 
-      # 4. Prépare les fichiers pour la publication sur GitHub Pages
+      # 4. Crée le fichier token.js avec le secret Hugging Face
+      - name: Inject Hugging Face Token
+        run: echo "export const HUGGINGFACE_TOKEN = '${{ secrets.HUGGINGFACE_TOKEN }}';" > docs/token.js
+
+      # 5. Crée le répertoire `docs` si manquant
       - name: Create docs directory if missing
         run: mkdir -p docs
 
-     
-
-      # 6. Utilise un token d'authentification pour pousser sur GitHub Pages
-      - name: Inject Hugging Face Token
-        run: echo "const HUGGINGFACE_TOKEN = '${{ secrets.HUGGINGFACE_TOKEN }}';" > docs/token.js
+      # 6. Vérifie la structure des fichiers pour la publication
+      - name: Validate docs directory
+        run: |
+          ls -l docs
 
       # 7. Déploye les fichiers sur GitHub Pages
       - name: Deploy to GitHub Pages
