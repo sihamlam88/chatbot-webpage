@@ -1,3 +1,3 @@
-// token.js (optional)
-export const HUGGINGFACE_TOKEN = process.env.HUGGINGFACE_TOKEN;
+export const HUGGINGFACE_TOKEN = 'temporary_token_or_placeholder';
+
 
