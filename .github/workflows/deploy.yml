@@ -1,55 +1,37 @@
-name: Deploy Chatbot Page
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches:
-      - main  # Exécute ce workflow à chaque push sur la branche principale.
+      - main
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      # 1. Vérifie et clone le code
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. Installe les dépendances (si nécessaire)
-      - name: Install Dependencies
-        run: |
-          if [ -f "package.json" ]; then
-            npm install
-          else
-            echo "No package.json found. Skipping npm install."
-          fi
-
-      # 3. Vérifie si le fichier index.html est bien dans le dossier `docs`
-      - name: Check if index.html exists
-        run: |
-          if [ -f "docs/index.html" ]; then
-            echo "index.html found in docs directory."
-          else
-            echo "index.html is missing."
-            exit 1
-          fi
-
-      # 4. Crée le fichier token.js avec le secret Hugging Face
-      - name: Inject Hugging Face Token
-        run: echo "export const HUGGINGFACE_TOKEN = '${{ secrets.HUGGINGFACE_TOKEN }}';" > docs/token.js
-
-      # 5. Crée le répertoire `docs` si manquant
-      - name: Create docs directory if missing
-        run: mkdir -p docs
-
-      # 6. Vérifie la structure des fichiers pour la publication
-      - name: Validate docs directory
-        run: |
-          ls -l docs
-
-      # 7. Déploye les fichiers sur GitHub Pages
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          publish_dir: ./docs
-          personal_token: ${{ secrets.GH_TOKEN }}
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build project
+        run: npm run build
+        env:
+          HUGGINGFACE_TOKEN: ${{ secrets.HUGGINGFACE_TOKEN }}
+
+      - name: Inject Hugging Face Token
+        run: echo "export const HUGGINGFACE_TOKEN = '${{ secrets.HUGGINGFACE_TOKEN }}';" > src/token.js
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
 
 
