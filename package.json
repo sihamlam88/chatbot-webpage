@@ -6,8 +6,8 @@
   },
   "scripts": {
     "start": "node app.js"
-    "build": "vite build" // Example for Vite; adjust based on your tool
+    "build": "vite build" 
   }
 }
 
-}
+
