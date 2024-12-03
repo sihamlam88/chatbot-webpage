@@ -77,7 +77,6 @@ chatForm.addEventListener('submit', async (event) => {
   chatMessages.lastElementChild.innerHTML = `<strong>Chatbot:</strong> ${botResponse}`;
 });
 
-  }
 }
 
 // Gestionnaire d'événements pour le formulaire de chat
