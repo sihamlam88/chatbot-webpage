@@ -22,14 +22,14 @@ async function getChatbotResponse(userInput) {
     const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${HUGGINGFACE_TOKEN}`, // Token from secrets or environment variable
-        'Content-Type': 'application/json', // Ensure JSON format
+        Authorization: `Bearer ${HUGGINGFACE_TOKEN}`,
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        inputs: userInput, // User's input text
+        inputs: userInput,
         options: {
-          wait_for_model: true, // Wait if the model is not ready
-          use_cache: false, // Optional, avoids caching issues
+          wait_for_model: true,
+          use_cache: false,
         },
       }),
     });
@@ -42,7 +42,7 @@ async function getChatbotResponse(userInput) {
 
     const data = await response.json();
     if (data && data.generated_text) {
-      return data.generated_text; // Return the generated text
+      return data.generated_text;
     } else {
       throw new Error('No generated response.');
     }
@@ -57,42 +57,16 @@ chatForm.addEventListener('submit', async (event) => {
   event.preventDefault();
   const userInput = chatInput.value.trim();
 
-  // Check for empty input and display a warning if needed
   if (!userInput) {
     displayMessage('bot', 'Please enter something.');
     return;
   }
 
-  // Display the user's message and clear the input field
   displayMessage('user', userInput);
   chatInput.value = '';
-
-  // Show a "thinking..." message while waiting for the API response
   displayMessage('bot', 'Thinking...');
-  
-  // Get the chatbot's response
+
   const botResponse = await getChatbotResponse(userInput);
-  
-  // Replace the "thinking..." message with the chatbot's response
   chatMessages.lastElementChild.innerHTML = `<strong>Chatbot:</strong> ${botResponse}`;
 });
 
-}
-
-// Gestionnaire d'événements pour le formulaire de chat
-chatForm.addEventListener('submit', async (event) => {
-  event.preventDefault();
-  const userInput = chatInput.value.trim();
-
-  // Check for empty input and display a warning if needed
-  if (!userInput) {
-    displayMessage('bot', 'Please enter something.');
-    return; // Stop further execution
-  }
-
-  displayMessage('user', userInput);
-  chatInput.value = ''; // Clear input field
-  displayMessage('bot', 'Thinking...'); // Show thinking message
-  const botResponse = await getChatbotResponse(userInput);
-  chatMessages.lastElementChild.innerHTML = `<strong>Chatbot:</strong> ${botResponse}`; // Replace thinking message with response
-});
