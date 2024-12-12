@@ -1,0 +1,35 @@
+name: Deploy Chatbot
+
+on:
+  push:
+    branches:
+      - main  # Trigger on push to main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout code from the public repository
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Step 2: Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      # Step 4: Inject the API key as an environment variable
+      - name: Inject Chatbot API Key
+        run: |
+          echo "CHATBOT_API_KEY=${{ secrets.CHATBOT_API_KEY }}" >> $GITHUB_ENV
+
+      # Step 5: Run the application (this can be adjusted for your deployment method)
+      - name: Run app
+        run: python app.py
