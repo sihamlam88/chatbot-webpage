@@ -20,16 +20,27 @@ jobs:
         with:
           python-version: 3.8
 
-      # Step 3: Install dependencies
-      - name: Install dependencies
+      # Step 3: Install Python dependencies
+      - name: Install Python dependencies
         run: |
           pip install -r requirements.txt
 
-      # Step 4: Inject the API key as an environment variable
+      # Step 4: Set up Node.js for JavaScript (required to run app.js)
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'  # Use the appropriate Node.js version
+
+      # Step 5: Inject the API key as an environment variable
       - name: Inject Chatbot API Key
         run: |
           echo "CHATBOT_API_KEY=${{ secrets.CHATBOT_API_KEY }}" >> $GITHUB_ENV
 
-      # Step 5: Run the application (this can be adjusted for your deployment method)
+      # Step 6: Install Node.js dependencies (if you have a package.json)
+      - name: Install Node.js dependencies
+        run: |
+          npm install
+
+      # Step 7: Run the JavaScript application
       - name: Run app
-        run: python app.js
+        run: node app.js
