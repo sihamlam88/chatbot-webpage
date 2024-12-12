@@ -32,4 +32,4 @@ jobs:
 
       # Step 5: Run the application (this can be adjusted for your deployment method)
       - name: Run app
-        run: python app.py
+        run: python app.js
