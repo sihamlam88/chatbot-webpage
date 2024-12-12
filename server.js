@@ -1,13 +1,14 @@
 const express = require('express');
-const path = require('path');
-
 const app = express();
 const port = 3000;
 
-// Serve static files (HTML, CSS, JS) from the 'public' folder
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json());
 
-// Start the server
+// Define a simple route
+app.get('/', (req, res) => {
+  res.send('Hello, world!');
+});
+
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
