@@ -1,3 +1,5 @@
+// app.js
+
 async function getChatbotResponse(userInput) {
     try {
         const response = await fetch('https://api.openai.com/v1/completions', {
@@ -27,10 +29,11 @@ async function getChatbotResponse(userInput) {
     }
 }
 
-// Example usage:
+// Handle form submission and interaction with the chatbot
 document.querySelector("form").addEventListener("submit", async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent form from reloading the page
     const userInput = document.querySelector("#userInput").value;
     const response = await getChatbotResponse(userInput);
     console.log("Chatbot response:", response);
+    document.querySelector("#chatResponse").textContent = response; // Display response on page
 });
