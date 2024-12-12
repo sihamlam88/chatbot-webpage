@@ -3,29 +3,28 @@ name: Deploy Chatbot
 on:
   push:
     branches:
-      - main
+      - main  # Trigger on push to main branch
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout code
+      # Step 1: Checkout the code
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Set up Node.js
+      # Step 2: Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '16'  # Make sure you are using the correct version of Node.js
 
-      # Install dependencies
+      # Step 3: Install dependencies
       - name: Install dependencies
-        run: |
-          npm install
+        run: npm install
 
-      # Run the Node.js server (this serves the HTML and JS files)
-      - name: Run the server
-        run: |
-          node server.js
+      # Step 4: Run the application
+      - name: Run app
+        run: node server.js
+
