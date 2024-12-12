@@ -1,36 +1,18 @@
-from flask import Flask, render_template, request
-import openai
-from dotenv import load_dotenv
 import os
 
-# Load environment variables
-load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# Get the API key from environment variables
+chatbot_api_key = os.getenv("CHATBOT_API_KEY")
 
-app = Flask(__name__)
+# Simulate chatbot interaction (replace this with your actual logic)
+def chatbot_response(user_input):
+    # Use the chatbot API key to interact with the chatbot API
+    if chatbot_api_key:
+        # Example: Call to the chatbot API (this is just a simulation)
+        return f"Chatbot response to '{user_input}' with API key: {chatbot_api_key}"
+    else:
+        return "API key not found."
 
-@app.route('/')
-def home():
-    return render_template('index.html')
-
-@app.route('/chat', methods=['POST'])
-def chat():
-    user_input = request.json['user_input']
-    response = chat_with_gpt(user_input)
-    return {'response': response}
-
-def chat_with_gpt(prompt):
-    try:
-        completion = openai.ChatCompletion.create(
-            model="gpt-4",
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": prompt}
-            ]
-        )
-        return completion['choices'][0]['message']['content']
-    except Exception as e:
-        return f"Error: {e}"
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080)
+# Example interaction
+if __name__ == "__main__":
+    user_input = input("Ask the chatbot: ")
+    print(chatbot_response(user_input))
